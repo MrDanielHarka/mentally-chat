@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import './ChatInputField.css'
+
 export function ChatInputField({ onSend }: { onSend: (message: string) => void }) {
   const [input, setInput] = useState('');
 
@@ -14,7 +16,7 @@ export function ChatInputField({ onSend }: { onSend: (message: string) => void }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className='chat-input-field' onSubmit={handleSubmit}>
       <input type="text" value={input} onChange={handleInputChange} />
       <button type="submit">Send</button>
     </form>

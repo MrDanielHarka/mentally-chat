@@ -1,7 +1,7 @@
 #root {
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -11,16 +11,14 @@
   justify-content: center;
   align-items: center;
 
+  height: 100vh;
+
   > *:first-child {
     flex: 7.5;
   }
 
   > *:last-child {
     flex: 2.5;
-  }
-
-  > * {
-    margin: 0px 1rem;
   }
 }
 

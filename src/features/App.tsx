@@ -1,8 +1,8 @@
 import './App.css';
 import { Chat } from './chat/Chat';
-import { Dashboard } from './components/Dashboard';
+import { Dashboard } from './dashboard/Dashboard';
 
-function App() {
+export function App() {
   return (
     <>
       <div className="container">
@@ -12,5 +12,3 @@ function App() {
     </>
   );
 }
-
-export default App;
