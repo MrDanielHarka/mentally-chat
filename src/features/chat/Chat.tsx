@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { ChatInputField } from './chat-input-field/ChatInputField';
 import { ChatMessage } from './chat-message/ChatMessage';
 
@@ -13,29 +13,31 @@ const initialState: MessageState = {
   messages: [],
 };
 
-const socket: Socket = io('http://localhost:3000');
-
 export function Chat() {
-  const [state, dispatch] = useReducer(messageReducer, initialState);
   const auth = useAuth();
+  const [socket, setSocket] = useState<Socket | null>(null);
+  
+  const [state, dispatch] = useReducer(messageReducer, initialState);
 
   useEffect(() => {
     fetchMessages().then((messages) => {
       dispatch({ type: ActionType.FETCHED_MESSAGES, payload: messages });
     });
-  }, []);
+
+    setSocket(io('http://localhost:3000', { auth: { email: auth.user?.email } }));
+  }, [auth]);
 
   useEffect(() => {
-    socket.on('message', (message: Message) => {
+    socket?.on('message', (message: Message) => {
       dispatch({
         type: ActionType.RECEIVED_MESSAGE,
         payload: message,
       });
     });
-  }, []);
+  }, [socket]);
 
   const sendMessage = async (text: string) => {
-    socket.emit('message', { userId: auth.user!.id, text });
+    socket?.emit('message', { text });
   };
 
   return (
