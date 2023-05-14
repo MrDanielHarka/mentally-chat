@@ -7,7 +7,7 @@ export const users: User[] = [
     id: 'patient@mentally.at',
     email: 'patient@mentally.at',
     password: 'password',
-    avatar: '',
+    avatar: 'https://cdn.midjourney.com/049cee20-c4f3-44c5-ac61-f5f35671a95f/0_0.png',
     firstName: 'John',
     lastName: 'Doe',
   },

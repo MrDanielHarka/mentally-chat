@@ -15,7 +15,7 @@ export function ChatMessage({ message }: { message: Message }) {
     className = 'from-therapist';
   }
 
-  const avatar = message.userId == null ? '' : users.find((user) => user.id === message.userId)?.avatar;
+  const avatar = message.userId == null ? 'https://cdn.midjourney.com/017d1f0e-f113-44eb-8d45-1aee5d8751ae/0_0.png' : users.find((user) => user.id === message.userId)?.avatar;
 
   return (
     <div className={`chat-message-container ${className}`}>
