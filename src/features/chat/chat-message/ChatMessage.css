@@ -44,8 +44,9 @@
   padding: 16px;
 }
 
-.chat-bubble .chat-text {
+.chat-bubble p {
   margin: 0;
+  text-align: start;
 }
 
 .chat-date {

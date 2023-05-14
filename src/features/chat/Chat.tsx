@@ -3,7 +3,6 @@ import { ChatInputField } from './chat-input-field/ChatInputField';
 import { ChatMessage } from './chat-message/ChatMessage';
 
 import './Chat.css';
-import { ChatStatusBadge } from './chat-status-badge/ChatStatusBadge';
 import { ActionType, MessageState, messageReducer } from '../../state/messages/messageReducer';
 import { useAuth } from '../../state/auth/authReducer';
 import { Socket, io } from 'socket.io-client';
@@ -41,8 +40,6 @@ export function Chat() {
 
   return (
     <div className="chat-container">
-      <ChatStatusBadge />
-
       <div className="chat-messages">
         {state.messages.map((message) => (
           <div>

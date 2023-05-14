@@ -24,7 +24,7 @@ export function messageReducer(state: MessageState, action: Action): MessageStat
       }
 
       const updatedMessages = [...state.messages, newMessage].sort(
-        (a, b) => new Date(a.createdAt).getUTCMilliseconds() - new Date(b.createdAt).getUTCMilliseconds()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
 
       return { ...state, messages: updatedMessages };
@@ -32,7 +32,7 @@ export function messageReducer(state: MessageState, action: Action): MessageStat
       const loadedMessages = action.payload;
 
       const messages = loadedMessages.sort(
-        (a, b) => new Date(a.createdAt).getUTCMilliseconds() - new Date(b.createdAt).getUTCMilliseconds()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
       return { ...state, messages: messages };
     }
