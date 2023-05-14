@@ -1,7 +1,14 @@
+import { useAuth } from '../../state/auth/authReducer';
+
+import './Dashboard.css';
+
 export function Dashboard() {
+  const auth = useAuth();
+
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className='dashboard-container'>
+      <h2>Welcome back, {auth.user?.firstName}!</h2>
+      <p>Here's your dashboard.</p>
     </div>
   );
 }

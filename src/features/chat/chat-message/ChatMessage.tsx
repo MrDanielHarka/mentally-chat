@@ -1,14 +1,32 @@
-import { Messages } from 'mentally-server';
+import { useAuth, users } from '../../../state/auth/authReducer';
+import { Message } from '../../../state/messages/message';
+
 import './ChatMessage.css';
 
-export function MessageBubble({ message }: { message: Messages }) {
+export function ChatMessage({ message }: { message: Message }) {
+  const auth = useAuth();
+
+  var className = '';
+  if (message.userId == null) {
+    className = 'from-bot';
+  } else if (auth.user?.id === message.userId) {
+    className = 'from-user';
+  } else {
+    className = 'from-therapist';
+  }
+
+  const avatar = message.userId == null ? '' : users.find((user) => user.id === message.userId)?.avatar;
+
   return (
-    <div className="chat-message">
-      <div className="chat-text">
-        <p>{message.text}</p>
+    <div className={`chat-message-container ${className}`}>
+      <div className="chat-row">
+        <img src={`${avatar}`} alt="Avatar" className="chat-message-avatar" />
+
+        <div className="chat-bubble">
+          <p className="chat-text">{message.text}</p>
+          <p className="chat-date">{new Date(message.createdAt).toLocaleTimeString()}</p>
+        </div>
       </div>
-  
-      <p className="actions">{message.actions}</p>
     </div>
   );
 }

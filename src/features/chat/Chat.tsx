@@ -1,47 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { ChatInputField } from './chat-input-field/ChatInputField';
-import { MessageBubble } from './chat-message/ChatMessage';
-import { messageService } from '../../http/client';
-import { Messages } from 'mentally-server';
+import { ChatMessage } from './chat-message/ChatMessage';
 
-import './Chat.css'
+import './Chat.css';
+import { ChatStatusBadge } from './chat-status-badge/ChatStatusBadge';
+import { ActionType, MessageState, messageReducer } from '../../state/messages/messageReducer';
+import { useAuth } from '../../state/auth/authReducer';
+import { Socket, io } from 'socket.io-client';
+import { fetchMessages } from '../../state/messages/messageClient';
+import { Message } from '../../state/messages/message';
+
+const initialState: MessageState = {
+  messages: [],
+};
+
+const socket: Socket = io('http://localhost:3000');
 
 export function Chat() {
-  const [messages, setMessages] = useState<Messages[]>([]);
-
-  const addMessage = (message: Messages) => {
-    setMessages((messages) => {
-      if (!messages.find((msg) => msg._id === message._id)) {
-        return [...messages, message].sort((a, b) => a.createdAt - b.createdAt);
-      }
-
-      return messages;
-    });
-  };
+  const [state, dispatch] = useReducer(messageReducer, initialState);
+  const auth = useAuth();
 
   useEffect(() => {
-    messageService.on('created', (message: Messages) => addMessage(message));
-  }, []);
-
-  useEffect(() => {
-    messageService.find({ paginate: false }).then((messages: { data: Messages[] }) => {
-      setMessages(messages.data.sort((a, b) => a.createdAt - b.createdAt));
+    fetchMessages().then((messages) => {
+      dispatch({ type: ActionType.FETCHED_MESSAGES, payload: messages });
     });
   }, []);
 
-  const sendMessage = (text: string) => {
-    messageService
-      .create({
-        text: text,
-      })
-      .then((message) => addMessage(message));
+  useEffect(() => {
+    socket.on('message', (message: Message) => {
+      dispatch({
+        type: ActionType.RECEIVED_MESSAGE,
+        payload: message,
+      });
+    });
+  }, []);
+
+  const sendMessage = async (text: string) => {
+    socket.emit('message', { userId: auth.user!.id, text });
   };
 
   return (
-    <div className='chat'>
-      {messages.map((msg) => (
-        <MessageBubble key={msg._id.toString()} message={msg} />
-      ))}
+    <div className="chat-container">
+      <ChatStatusBadge />
+
+      <div className="chat-messages">
+        {state.messages.map((message) => (
+          <div>
+            <ChatMessage key={message.id} message={message} />
+          </div>
+        ))}
+      </div>
 
       <ChatInputField onSend={sendMessage} />
     </div>

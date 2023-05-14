@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import './SignIn.css';
 import { useNavigate } from 'react-router';
-import { client } from '../../http/client';
+import { useAuth } from '../../state/auth/authReducer';
 
 export function SignIn() {
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const [state, setState] = useState({
     email: '',
@@ -22,14 +23,9 @@ export function SignIn() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    client
-      .authenticate({
-        strategy: 'local',
-        email: state.email,
-        password: state.password,
-      })
-      .then(() => navigate('/'))
-      .catch((err) => console.log('Error: ', err));
+    auth.login({ email: state.email, password: state.password }).then(() => {
+      navigate('/');
+    });
   };
 
   return (

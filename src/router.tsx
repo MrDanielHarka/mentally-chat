@@ -1,32 +1,26 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom';
-import { App } from './features/App';
 import { SignIn } from './features/sign-in/SignIn';
-import { client } from './http/client';
+import { App } from './features/app/App';
+import { useAuth } from './state/auth/authReducer';
 import { useEffect, useState } from 'react';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const [auth, setAuth] = useState<boolean | null>(null);
+  const auth = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (client.authentication != null) {
-      setAuth(true);
-    }
-
-    client.authentication
-      .reAuthenticate()
-      .then((res) => {
-        setAuth(res?.accessToken != null);
-      })
-      .catch(() => setAuth(false));
+    auth.reauthenticate().then((isAuthenticated) => {
+      setIsAuthenticated(isAuthenticated);
+    });
   }, []);
 
-  if (auth == null) {
-    return <div>Loading...</div>;
-  } else if (auth === false) {
+  if (isAuthenticated === null) {
+    return <p>Loading....</p>;
+  } else if (auth.isAuthenticated) {
+    return children;
+  } else {
     return <Navigate to="/sign-in" />;
   }
-
-  return children;
 };
 
 export const router = createBrowserRouter([
